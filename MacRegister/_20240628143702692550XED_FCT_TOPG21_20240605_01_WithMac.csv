@@ -1,0 +1,103 @@
+
+#INIT
+MODEL_LAST : 550XED
+MODEL_PROGRAM : 550XED
+MODEL : 550XED
+P/N : M08101X5802834
+S/W : 
+DATE : 2024/06/05
+TIME : 09:37:02
+TESTCODE : TOPG21
+LOGVERSION : Ver 2.4
+PC_CPU : 2.90 GHz/16-Core
+PC_RAM(Available) : 16160 MB
+PC_RAM_INIT(free) : 2450372 KB
+PC_DISK(C-Drive free/Total) : 155763/210000 MB
+PC_OS : Microsoft Enterprise Edition (build 9200) 64-bit
+USB_DRIVER_VERSION : 
+PC MAC Address : 00-68-EB-9F-0A-22
+MSTS Version : V1.1
+JIG : 1
+PROGRAM : DSFP_FCT_ALL_Runtime_1.0.31.0_r00070
+INIFILE : 550XED_OPEN_FCT_Ver_1.0.24.1
+USE_GFDS : FALSE
+RDM_LOT : 10.56.140.36_2024-06-04 16:22:05.230
+
+#TEST
+/*================================================================================
+Test Conditions, Measured Value, Lower Limit, Upper Limit, P/F, Sec, Code, Code Lsl, Code Usl, Meas Fine, Code Fine 
+================================================================================*/
+Log_Level, 1, , , P, 0
+FailToContinue_Mode, Not Applied, , , P, 0
+DBMS_Type, Oracle/MSSQL, , , P, 0
+Connection_Booting_Time(Sec), 120, , , P, 0
+Connection_Check_InOut(Only AutoLine), Applied, , , P, 0
+SVC_Function_Mode, Not Applied, , , P, 0
+Max_Retry_Count, 2, , , P, 0
+Full_Model_Name, NONE, , , P, 0
+Main_PO, NONE, , , P, 0
+Disable_Multi_Command, 0, , , P, 0
+
+// << START FCT >>
+Dut_Connection[C],   1.00 ,   1.00 ,   1.00 , P , 15 ,,, 
+PATCH_VERSION SKIP,   1.00 ,   1.00 ,   1.00 , P , 15 ,,, 
+FCT_PC_START, 1, 1, 1, P, 16
+CONTROL_NUMBER [W],   1.00 ,   1.00 ,   1.00 , P , 16 ,,, 
+CONTROL_NUMBER [R], M08101X5802834, M08101X5802834, M08101X5802834, P, 17
+
+// << RTC Write >>
+RTC[W],   1.00 ,  -2.00 ,   2.00 , P , 18 ,,, 
+
+// << Windows Items Check >>
+// Multi Item : 4 
+UUID TEST,   1.00 ,   1.00 ,   1.00 , P , 19 ,,, 
+DEVICE_VERIFY TEST,   1.00 ,   1.00 ,   1.00 , P , 24 ,,, 
+TPM_Type_Check (fTPM),   1.00 ,   1.00 ,   1.00 , P , 25 ,,, 
+MELOCK_SET TEST,   1.00 ,   1.00 ,   1.00 , P , 25 ,,, 
+
+// << All TestItems Check >>
+// Multi Item : 9 
+BASIC_MODEL_NAME [R], 550XED, 550XED, 550XED, P, 26
+CPU_TEMPERATURE TEST,  77.00 ,  20.00 ,  80.00 , P , 26 ,,, 
+USB TEST,   2.00 ,   2.00 ,   2.00 , P , 29 ,,, 
+SD_CARD,   1.00 ,   1.00 ,   1.00 , P , 29 ,,, 
+AUDIO_LOOP_BACK TEST,   1.00 ,   1.00 ,   1.00 , P , 30 ,,, 
+BT_DEVICE TEST,   1.00 ,   1.00 ,   1.00 , P , 30 ,,, 
+WLAN_DEVICE TEST,   1.00 ,   1.00 ,   1.00 , P , 30 ,,, 
+SSD TEST,   1.00 ,   1.00 ,   1.00 , P , 30 ,,, 
+CAMERA TEST,   1.00 ,   1.00 ,   1.00 , P , 30 ,,, 
+ETHERNET_ID [W],   1.00 ,   1.00 ,   1.00 , P , 43 ,,, 
+// DB  Spec : [CPU]BRAND-STR=12TH_GEN_INTEL(R)_CORE(TM)_I5-1235U,[BIOS]OLD-VER=P07RGK,[MEMORY]WSPEED=94050C,[MEMORY]MEM-SIZE=8192,[BLUETOOTH]WID=80870AAA,[WLAN]WID=51F00034,[VIDEO]ID=46A8,[VIDEO]WMEM-SIZE=8MB,[HDD-MASTER]OLD-VER=SGLB207A0X-C01-G002-S0001,[TBT-BB]OLD-VER=6C7,[LAPKAT]OLD-VER=P07RGK 
+// DUT Spec : [CPU]BRAND-STR=12TH_GEN_INTEL(R)_CORE(TM)_I5-1235U,[BIOS]OLD-VER=P07RGK,[LAPKAT]OLD-VER=P07RGK,[MEMORY]MEM-SIZE=8192MB,[MEMORY]WSPEED=94050C,[VIDEO]ID=46A8,[VIDEO]WMEM-SIZE=8MB,[HDD]MODEL-NO-OLD=SAMSUNG-MZVLQ256HBJD-00BH1,[HDD]OLD-VER=HPS1NFAV,[HDD2]MODEL-NO-OLD=NONE,[HDD2]OLD-VER=NONE,[HDD-MASTER]OLD-VER=SGLB207A0X-C01-G002-S0001,[2ND-HDD-MASTER]OLD-VER=NONE,[CAMERA]WID=2B7EB572,[CAMERA]OLD-VER=0008,[DIGITIZER]OLD-VER=NONE,[LAN]WID=81688168,[WLAN]WID=51F00034,[BLUETOOTH]WID=80870AAA,[LCD]NEW-VER=NT156FHM-N6,[TSP]OLD-VER=NONE,[USBPDIC]OLD-VER=RGK.0.47,[WPS]OLD-VER=NONE,[TBT-BB]OLD-VER=6C7,[LTE]WID=NONE,[UFS]OLD-VER=NONE 
+NEW_SPEC_CHECK TEST (SECTION),   1.00 ,   1.00 ,   1.00 , P , 48 ,,, 
+ETHERNET_ID [R],   1.00 ,   1.00 ,   1.00 , P , 51 ,,, 
+// ETHERNET ID : 8CB0E9C78FFB 
+S3 TEST, 10342.00 , 6000.00 , 20000.00 , P , 64 ,,, 
+
+// << EquipItems Check >>
+BATTERY TEST,   1.00 ,   1.00 ,   1.00 , P , 65 ,,, 
+HDMI DUMMY TEST,   1.00 ,   1.00 ,   1.00 , P , 65 ,,, 
+// HDMI FW : JYC1.8 
+
+// << Windows Manual Items Check >>
+
+// << RTC Read >>
+RTC[C],   1.00 ,  -2.00 ,   2.00 , P , 66 ,,, 
+
+// << END FCT >>
+FCT_PC_END, P, P, P, P, 66
+SetShipmode,   1.00 ,   1.00 ,   1.00 , P , 67 ,,, 
+ShutDownACDisconnect,   1.00 ,   1.00 ,   1.00 , P , 69 ,,, 
+Insert_SNs(DB),   1.00 ,   1.00 ,   1.00 , P , 71 ,,, 
+
+#END
+RESULT : PASS
+ERROR-CODE : 
+TEST-TIME : 71
+//PASS_AVERAGE_TIME : 93
+//Total : 21 Pass : 20 Fail : 1
+//FAIL_RATE :  4.76%
+//PC_RAM_END(free) : 2451496 KB
+
+
+

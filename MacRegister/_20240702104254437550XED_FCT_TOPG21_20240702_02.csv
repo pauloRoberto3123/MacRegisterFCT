@@ -1,0 +1,99 @@
+
+#INIT
+MODEL_LAST : 550XED
+MODEL_PROGRAM : 550XED
+MODEL : 550XED
+P/N : M08301X1Y04907
+S/W : 
+DATE : 2024/07/02
+TIME : 10:41:24
+TESTCODE : TOPG21
+LOGVERSION : Ver 2.4
+PC_CPU : 2.90 GHz/16-Core
+PC_RAM(Available) : 16160 MB
+PC_RAM_INIT(free) : 4194303 KB
+PC_DISK(C-Drive free/Total) : 166911/210000 MB
+PC_OS : Microsoft Enterprise Edition (build 9200) 64-bit
+USB_DRIVER_VERSION : 
+PC MAC Address : C8-5A-CF-07-88-F4
+MSTS Version : V1.1
+JIG : 2
+PROGRAM : DSFP_FCT_ALL_Runtime_1.0.31.0_r00070
+INIFILE : 550XED_OPEN_FCT_Ver_1.0.24.1
+USE_GFDS : FALSE
+RDM_LOT : 10.56.140.27_2024-07-02 09:00:40.377
+
+#TEST
+Log_Level, 1, , , P, 0
+FailToContinue_Mode, Not Applied, , , P, 0
+DBMS_Type, Oracle/MSSQL, , , P, 0
+Connection_Booting_Time(Sec), 120, , , P, 0
+Connection_Check_InOut(Only AutoLine), Applied, , , P, 0
+SVC_Function_Mode, Not Applied, , , P, 0
+Max_Retry_Count, 1, , , P, 0
+Full_Model_Name, NONE, , , P, 0
+Main_PO, NONE, , , P, 0
+Disable_Multi_Command, 0, , , P, 0
+
+// << START FCT >>
+Dut_Connection[C],   1.00 ,   1.00 ,   1.00 , P , 0 ,,, 
+PATCH_VERSION SKIP,   1.00 ,   1.00 ,   1.00 , P , 0 ,,, 
+FCT_PC_START, 2, 2, 2, P, 1
+CONTROL_NUMBER [W],   1.00 ,   1.00 ,   1.00 , P , 2 ,,, 
+CONTROL_NUMBER [R], M08301X1Y04907, M08301X1Y04907, M08301X1Y04907, P, 3
+
+// << RTC Write >>
+RTC[W],   1.00 ,  -2.00 ,   2.00 , P , 3 ,,, 
+
+// << Windows Items Check >>
+// Multi Item : 4 
+UUID TEST,   1.00 ,   1.00 ,   1.00 , P , 5 ,,, 
+DEVICE_VERIFY TEST,   1.00 ,   1.00 ,   1.00 , P , 9 ,,, 
+TPM_Type_Check (fTPM),   1.00 ,   1.00 ,   1.00 , P , 9 ,,, 
+MELOCK_SET TEST,   1.00 ,   1.00 ,   1.00 , P , 10 ,,, 
+
+// << All TestItems Check >>
+// Multi Item : 9 
+BASIC_MODEL_NAME [R], 550XED, 550XED, 550XED, P, 10
+CPU_TEMPERATURE TEST,  77.00 ,  20.00 ,  80.00 , P , 11 ,,, 
+BT_DEVICE TEST,   1.00 ,   1.00 ,   1.00 , P , 19 ,,, 
+USB TEST,   2.00 ,   2.00 ,   2.00 , P , 19 ,,, 
+WLAN_DEVICE TEST,   1.00 ,   1.00 ,   1.00 , P , 20 ,,, 
+CAMERA TEST,   1.00 ,   1.00 ,   1.00 , P , 20 ,,, 
+SD_CARD,   1.00 ,   1.00 ,   1.00 , P , 20 ,,, 
+SSD TEST,   1.00 ,   1.00 ,   1.00 , P , 20 ,,, 
+AUDIO_LOOP_BACK TEST,   1.00 ,   1.00 ,   1.00 , P , 21 ,,, 
+ETHERNET_ID [ALREADY WRITTEN],   1.00 ,   1.00 ,   1.00 , P , 26 ,,, 
+// DB  Spec : [CPU]BRAND-STR=12TH_GEN_INTEL(R)_CORE(TM)_I3-1215U,[BIOS]OLD-VER=P07RGK,[MEMORY]WSPEED=5E050C,[MEMORY]MEM-SIZE=16384,[BLUETOOTH]WID=80870AAA,[WLAN]WID=51F00034,[VIDEO]MEM-SIZE=8MB,[HDD-MASTER]OLD-VER=SGLB207A0X-C01-G002-S0001,[TBT-BB]OLD-VER=6C7,[LAPKAT]OLD-VER=P07RGK 
+// DUT Spec : [CPU]BRAND-STR=12TH_GEN_INTEL(R)_CORE(TM)_I3-1215U,[BIOS]OLD-VER=P07RGK,[LAPKAT]OLD-VER=P07RGK,[MEMORY]MEM-SIZE=16384MB,[MEMORY]WSPEED=5E050C,[VIDEO]ID=46B3,[VIDEO]WMEM-SIZE=8MB,[HDD]MODEL-NO-OLD=SAMSUNG-MZVLQ256HBJD-00BH1,[HDD]OLD-VER=HPS1NFAV,[HDD2]MODEL-NO-OLD=NONE,[HDD2]OLD-VER=NONE,[HDD-MASTER]OLD-VER=SGLB207A0X-C01-G002-S0001,[2ND-HDD-MASTER]OLD-VER=NONE,[CAMERA]WID=2B7EB572,[CAMERA]OLD-VER=0008,[DIGITIZER]OLD-VER=NONE,[LAN]WID=8168C878,[WLAN]WID=51F00034,[BLUETOOTH]WID=80870AAA,[LCD]NEW-VER=NT156FHM-N6,[TSP]OLD-VER=NONE,[USBPDIC]OLD-VER=RGK.0.47,[WPS]OLD-VER=NONE,[TBT-BB]OLD-VER=6C7,[LTE]WID=NONE,[UFS]OLD-VER=NONE 
+NEW_SPEC_CHECK TEST (SECTION),   1.00 ,   1.00 ,   1.00 , P , 36 ,,, 
+S3 TEST, 11155.00 , 6000.00 , 20000.00 , P , 50 ,,, 
+
+// << EquipItems Check >>
+BATTERY TEST, NO BATTERY, NO BATTERY, NO BATTERY, F, 50
+BATTERY TEST,   1.00 ,   1.00 ,   1.00 , P , 76 ,,, 
+HDMI DUMMY TEST,   1.00 ,   1.00 ,   1.00 , P , 76 ,,, 
+// HDMI FW : JYC1.9 
+
+// << Windows Manual Items Check >>
+
+// << RTC Read >>
+RTC[C],   2.00 ,  -2.00 ,   2.00 , P , 77 ,,, 
+
+// << END FCT >>
+FCT_PC_END, P, P, P, P, 78
+SetShipmode,   1.00 ,   1.00 ,   1.00 , P , 78 ,,, 
+ShutDownACDisconnect,   1.00 ,   1.00 ,   1.00 , P , 80 ,,, 
+Insert_SNs(DB),   1.00 ,   1.00 ,   1.00 , P , 87 ,,, 
+
+#END
+RESULT : PASS
+ERROR-CODE : 
+TEST-TIME : 87
+//PASS_AVERAGE_TIME : 87
+//Total : 1 Pass : 1 Fail : 0
+//FAIL_RATE : 0%
+//PC_RAM_END(free) : 4194303 KB
+
+
+
