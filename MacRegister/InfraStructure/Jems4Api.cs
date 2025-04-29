@@ -78,7 +78,7 @@ namespace MacRegister.InfraStructure
                     var requestUri = $"api/Wips/GetWipInformationBySerialNumber" +
                                      $"?SiteName={Uri.EscapeDataString(siteName)}" +
                                      $"&CustomerName={Uri.EscapeDataString(customerName)}" +
-                                     $"&MaterialName={Uri.EscapeDataString(assembly)}" +
+                                     //$"&MaterialName={Uri.EscapeDataString(assembly)}" +
                                      $"&SerialNumber={Uri.EscapeDataString(serialNumber)}";
 
                     var response = await client.GetAsync(requestUri);
