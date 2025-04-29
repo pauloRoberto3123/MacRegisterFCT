@@ -2,6 +2,7 @@
 using MacRegister.InfraStructure;
 using MacRegister.Model.Jems4Api;
 using MacRegister.Service;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -44,50 +45,51 @@ namespace MacRegister
 
             Program program = new Program(constants, fileOperations, macAPI, jabilApi, jesm4Api);
 
-
-
-            while (true)
-            {
-                var files = Directory.GetFiles(constants.PathLog);
-
-                foreach (var file in files)
-                {
-
-                    if (!fileOperations.IsFileLocked(file))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Processando o arquivo: {file}");
-                        Console.ResetColor();
-
-                        program.Run(constants, file, jesm4Api);
-
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Processamento do arquivo {file} concluído.");
-                        Console.ResetColor();
-
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine("\n-----------------------------------------\n");
-                        Console.ResetColor();
-                    }
-
-                }
-
-
-                Thread.Sleep(5000);
-            }
+            MonitorLatestFile(constants, jesm4Api, program);
 
         }
 
+        private static void MonitorLatestFile(Constants _constants, Jems4Api _jems4Api, Program program)
+        {
+            string lastProcessedFile = null;
+            DateTime lastProcessedTime = DateTime.MinValue;
+
+            while (true)
+            {
+                var latestFile = GetMostRecentlyModifiedFile(_constants.PathLog);
+
+                if (!string.IsNullOrEmpty(latestFile))
+                {
+                    DateTime modifiedTime = File.GetLastWriteTime(latestFile);
+
+                    // Process only if the timestamp is different from the last tracked one
+                    if (modifiedTime != lastProcessedTime)
+                    {
+                        program.Run(_constants, latestFile, _jems4Api);
+                        lastProcessedFile = latestFile;
+                        lastProcessedTime = modifiedTime;
+                    }
+                }
+
+                Thread.Sleep(5000); // Check every 5 seconds
+            }
+        }
+        private static string GetMostRecentlyModifiedFile(string directory)
+        {
+            var files = Directory.GetFiles(directory);
+            return files.Length > 0
+                ? files.OrderByDescending(f => File.GetLastWriteTime(f)).FirstOrDefault()
+                : null;
+        }
 
         private async void Run(Constants _constants, string pathWatch, Jems4Api _jems4Api)
         {
+            Console.WriteLine($"Iniciando o processamento do arquivo: {pathWatch}");
 
             OkToStartResponse okToStart = new OkToStartResponse();
 
-
-
-            string userServiceAccount = "3114809";
-            string PasswordServiceAccount = "36468683@JetT";
+            string userServiceAccount = _constants.UserName;
+            string PasswordServiceAccount = _constants.Password;
 
 
             if (_constants.LegacyMes == "False")
@@ -95,9 +97,7 @@ namespace MacRegister
                 await _jems4Api.AdSignin(userServiceAccount, PasswordServiceAccount);
             }
 
-
-
-            System.Threading.Thread.Sleep(2000);
+            Thread.Sleep(2000);
             string filePath = pathWatch;
             if (!File.Exists(filePath))
             {
@@ -127,7 +127,8 @@ namespace MacRegister
 
                 };
 
-                if ((string.IsNullOrEmpty(log.Mac) && !isRetest && log.TestResult == "P" ||
+                if ((
+                    //string.IsNullOrEmpty(log.Mac) && !isRetest && log.TestResult == "P" ||
                     string.IsNullOrEmpty(log.Serial) ||
                     string.IsNullOrEmpty(log.PgmVersion)
 
@@ -146,13 +147,13 @@ namespace MacRegister
                         Console.ResetColor();
                     }
 
-                    if (string.IsNullOrEmpty(log.Mac))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Mac não informado");
-                        Console.WriteLine($"Serial: {log.Serial}");
-                        Console.ResetColor();
-                    }
+                    //if (string.IsNullOrEmpty(log.Mac))
+                    //{
+                    //    Console.ForegroundColor = ConsoleColor.Yellow;
+                    //    Console.WriteLine("Mac não informado");
+                    //    Console.WriteLine($"Serial: {log.Serial}");
+                    //    Console.ResetColor();
+                    //}
 
                     if (string.IsNullOrEmpty(log.PgmVersion))
                     {
@@ -166,16 +167,16 @@ namespace MacRegister
                     Console.WriteLine("\n-----------------------------------------\n");
                     Console.ResetColor();
 
-                    _fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
+                    //_fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
                     return;
 
                 }
 
-                string resultPGM = _macApi.GetPgmVersion(log.Serial).ToUpper();
-
-                //resultPGM = "RUNTIME_1.0.31.0_R00070";
-
-
+                string resultPGM = _constants.PGM;
+                if (_constants.WillGetMac == "True")
+                {
+                    resultPGM = _macApi.GetPgmVersion(log.Serial).ToUpper();
+                }
 
                 if (resultPGM == "FAIL")
                 {
@@ -193,7 +194,7 @@ namespace MacRegister
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.WriteLine("\n-----------------------------------------\n");
                     Console.ResetColor();
-                    _fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
+                    //_fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
                     return;
                 }
 
@@ -227,7 +228,7 @@ namespace MacRegister
                     Console.WriteLine("\n-----------------------------------------\n");
                     Console.ResetColor();
 
-                    _fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
+                    //_fileOperations.MoveFileToError(filePath, _constants.PathProcessed);
 
                     return;
                 }
@@ -236,6 +237,9 @@ namespace MacRegister
                 {
                     if (_constants.LegacyMes == "False")
                     {
+                        Console.WriteLine("Chamando o Jabil API, parameters sent");
+                        Console.WriteLine($"Assembly: {_constants.Assembly}, Serial: {log.Serial}");
+
                         List<GetWipInformationBySerialNumberResponse> wipInformation = await _jems4Api.GetWipInformationBySerialNumber("Manaus", "SAMSUNG", _constants.Assembly, log.Serial);
                         okToStart = await _jems4Api.OkToStart(wipInformation.FirstOrDefault().WipId, _constants.Resource);
 
@@ -257,23 +261,16 @@ namespace MacRegister
                             completeWipRequest.EndDateTime = DateTime.UtcNow;
                             completeWipRequest.IsSingleWipMode = true;
 
-
-
-
-
                             startWipResponse = await _jems4Api.StartWip(startWipRequest);
                             completeWipResponse = await _jems4Api.CompleteWip(completeWipRequest);
-
-
                         }
-
                     }
 
 
 
                     var resultMesApi = _jabilApi.SendTestMes(mesApiRequest);
 
-                    if (!isRetest)
+                    if (!isRetest && _constants.WillGetMac == "True")
                     {
                         var resultMacApi = _macApi.InsertMacLog(macInsertRequest);
 
@@ -323,7 +320,7 @@ namespace MacRegister
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                         Console.WriteLine("\n-----------------------------------------\n");
                         Console.ResetColor();
-                        _fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
+                        //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
                         return;
 
                     }
@@ -368,7 +365,7 @@ namespace MacRegister
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                         Console.WriteLine("\n-----------------------------------------\n");
                         Console.ResetColor();
-                        _fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
+                        //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
                         return;
 
                     }
@@ -407,7 +404,7 @@ namespace MacRegister
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.WriteLine("\n-----------------------------------------\n");
                     Console.ResetColor();
-                    _fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
+                    //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
                     return;
                 }
 
@@ -417,18 +414,10 @@ namespace MacRegister
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 Console.ResetColor();
-                _fileOperations.MoveFileToError(filePath, _constants.PathError);
+                //_fileOperations.MoveFileToError(filePath, _constants.PathError);
                 return;
 
             }
-
-
         }
-
-
-
-
-
-
     }
 }

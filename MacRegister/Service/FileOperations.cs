@@ -38,7 +38,7 @@ namespace MacRegister.Service
 
                     string dateTimeString = $"{datePart} {timePart}";
 
-                    Console.WriteLine($"Concatenated DateTime String: {dateTimeString}");
+                    //Console.WriteLine($"Concatenated DateTime String: {dateTimeString}");
 
 
                     log.DateStart = dateTimeString;

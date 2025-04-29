@@ -79,6 +79,42 @@ namespace MacRegister.InfraStructure
             }
         }
 
+        public string UserName
+        {
+
+            get
+            {
+                return ConfigurationManager.AppSettings["UserName"];
+            }
+        }
+
+        public string Password
+        {
+
+            get
+            {
+                return ConfigurationManager.AppSettings["Password"];
+            }
+        }
+
+        public string WillGetMac
+        {
+
+            get
+            {
+                return ConfigurationManager.AppSettings["WillGetMac"];
+            }
+        }
+
+        public string PGM
+        {
+
+            get
+            {
+                return ConfigurationManager.AppSettings["PGM"];
+            }
+        }
+
         public string PathProcessed
         {
 
