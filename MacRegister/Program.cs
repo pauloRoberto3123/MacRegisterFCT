@@ -75,8 +75,6 @@ namespace MacRegister
                             program.Run(_constants, fileNameToParse);
                             lastProcessedFile = fileNameToParse;
                             lastProcessedTimeArray[i - 1] = modifiedTime;
-
-                            Console.WriteLine($"lastProcessedTime: {lastProcessedTimeArray[i - 1]}");
                         }
                     }
 
