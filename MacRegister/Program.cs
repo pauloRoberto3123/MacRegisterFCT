@@ -20,17 +20,13 @@ namespace MacRegister
         private readonly Constants _constants;
         private readonly MacAPI _macApi;
         private readonly JabilApi _jabilApi;
-        private readonly Jems4Api _jems4Api;
-        private static readonly ConcurrentQueue<string> _fileQueue = new ConcurrentQueue<string>();
-        private static readonly AutoResetEvent _fileEvent = new AutoResetEvent(false);
 
-        public Program(Constants constants, FileOperations fileOperations, MacAPI macApi, JabilApi jabilApi, Jems4Api jems4Api)
+        public Program(Constants constants, FileOperations fileOperations, MacAPI macApi, JabilApi jabilApi)
         {
             _constants = constants;
             _fileOperations = fileOperations;
             _macApi = macApi;
             _jabilApi = jabilApi;
-            _jems4Api = jems4Api;
         }
 
         public static void Main(string[] args)
@@ -41,15 +37,14 @@ namespace MacRegister
 
             MacAPI macAPI = new MacAPI(httpClient);
             JabilApi jabilApi = new JabilApi(httpClient);
-            Jems4Api jesm4Api = new Jems4Api(constants);
 
-            Program program = new Program(constants, fileOperations, macAPI, jabilApi, jesm4Api);
+            Program program = new Program(constants, fileOperations, macAPI, jabilApi);
 
-            MonitorLatestFile(constants, jesm4Api, program);
+            MonitorLatestFile(constants, program);
 
         }
 
-        private static void MonitorLatestFile(Constants _constants, Jems4Api _jems4Api, Program program)
+        private static void MonitorLatestFile(Constants _constants, Program program)
         {
             string lastProcessedFile = null;
             DateTime lastProcessedTime = DateTime.MinValue;
@@ -65,7 +60,7 @@ namespace MacRegister
                     // Process only if the timestamp is different from the last tracked one
                     if (modifiedTime != lastProcessedTime)
                     {
-                        program.Run(_constants, latestFile, _jems4Api);
+                        program.Run(_constants, latestFile);
                         lastProcessedFile = latestFile;
                         lastProcessedTime = modifiedTime;
                     }
@@ -82,20 +77,9 @@ namespace MacRegister
                 : null;
         }
 
-        private async void Run(Constants _constants, string pathWatch, Jems4Api _jems4Api)
+        private void Run(Constants _constants, string pathWatch)
         {
             Console.WriteLine($"Iniciando o processamento do arquivo: {pathWatch}");
-
-            OkToStartResponse okToStart = new OkToStartResponse();
-
-            string userServiceAccount = _constants.UserName;
-            string PasswordServiceAccount = _constants.Password;
-
-
-            if (_constants.LegacyMes == "False")
-            {
-                await _jems4Api.AdSignin(userServiceAccount, PasswordServiceAccount);
-            }
 
             Thread.Sleep(2000);
             string filePath = pathWatch;
@@ -147,13 +131,13 @@ namespace MacRegister
                         Console.ResetColor();
                     }
 
-                    //if (string.IsNullOrEmpty(log.Mac))
-                    //{
-                    //    Console.ForegroundColor = ConsoleColor.Yellow;
-                    //    Console.WriteLine("Mac não informado");
-                    //    Console.WriteLine($"Serial: {log.Serial}");
-                    //    Console.ResetColor();
-                    //}
+                    if (string.IsNullOrEmpty(log.Mac) && _constants.WillGetMac == "True")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Mac não informado");
+                        Console.WriteLine($"Serial: {log.Serial}");
+                        Console.ResetColor();
+                    }
 
                     if (string.IsNullOrEmpty(log.PgmVersion))
                     {
@@ -235,39 +219,6 @@ namespace MacRegister
 
                 if (log.TestResult == "P")
                 {
-                    if (_constants.LegacyMes == "False")
-                    {
-                        Console.WriteLine("Chamando o Jabil API, parameters sent");
-                        Console.WriteLine($"Assembly: {_constants.Assembly}, Serial: {log.Serial}");
-
-                        List<GetWipInformationBySerialNumberResponse> wipInformation = await _jems4Api.GetWipInformationBySerialNumber("Manaus", "SAMSUNG", _constants.Assembly, log.Serial);
-                        okToStart = await _jems4Api.OkToStart(wipInformation.FirstOrDefault().WipId, _constants.Resource);
-
-
-                        if (okToStart.OkToStart == true)
-                        {
-                            StartWipRequest startWipRequest = new StartWipRequest();
-                            StartWipResponse startWipResponse = new StartWipResponse();
-                            CompleteWipRequest completeWipRequest = new CompleteWipRequest();
-                            CompleteWipResponse completeWipResponse = new CompleteWipResponse();
-
-                            startWipRequest.SerialNumber = log.Serial;
-                            startWipRequest.WipId = wipInformation.FirstOrDefault().WipId;
-                            startWipRequest.StartDateTime = DateTime.UtcNow;
-                            startWipRequest.ShouldSkipValidation = true;
-                            startWipRequest.IsSingleWipMode = true;
-
-                            completeWipRequest.WipId = wipInformation.FirstOrDefault().WipId;
-                            completeWipRequest.EndDateTime = DateTime.UtcNow;
-                            completeWipRequest.IsSingleWipMode = true;
-
-                            startWipResponse = await _jems4Api.StartWip(startWipRequest);
-                            completeWipResponse = await _jems4Api.CompleteWip(completeWipRequest);
-                        }
-                    }
-
-
-
                     var resultMesApi = _jabilApi.SendTestMes(mesApiRequest);
 
                     if (!isRetest && _constants.WillGetMac == "True")
