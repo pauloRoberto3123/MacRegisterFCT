@@ -47,23 +47,40 @@ namespace MacRegister
         private static void MonitorLatestFile(Constants _constants, Program program)
         {
             string lastProcessedFile = null;
-            DateTime lastProcessedTime = DateTime.MinValue;
+            DateTime[] lastProcessedTimeArray = {
+                DateTime.MinValue,
+                DateTime.MinValue,
+                DateTime.MinValue,
+                DateTime.MinValue,
+                DateTime.MinValue,
+                DateTime.MinValue
+            };
+            //DateTime lastProcessedTime = DateTime.MinValue;
 
             while (true)
             {
                 var latestFile = GetMostRecentlyModifiedFile(_constants.PathLog);
 
-                if (!string.IsNullOrEmpty(latestFile))
+                for(int i = 1; i <= 6; i++)
                 {
-                    DateTime modifiedTime = File.GetLastWriteTime(latestFile);
+                    var fileNameToParse = latestFile.Substring(0, latestFile.Length - 5) + $"{i}.csv";
 
-                    // Process only if the timestamp is different from the last tracked one
-                    if (modifiedTime != lastProcessedTime)
+                    if (!string.IsNullOrEmpty(fileNameToParse) && File.Exists(fileNameToParse))
                     {
-                        program.Run(_constants, latestFile);
-                        lastProcessedFile = latestFile;
-                        lastProcessedTime = modifiedTime;
+                        DateTime modifiedTime = File.GetLastWriteTime(fileNameToParse);
+
+                        // Process only if the timestamp is different from the last tracked one
+                        if (modifiedTime != lastProcessedTimeArray[i-1])
+                        {
+                            program.Run(_constants, fileNameToParse);
+                            lastProcessedFile = fileNameToParse;
+                            lastProcessedTimeArray[i - 1] = modifiedTime;
+
+                            Console.WriteLine($"lastProcessedTime: {lastProcessedTimeArray[i - 1]}");
+                        }
                     }
+
+                    Thread.Sleep(500);
                 }
 
                 Thread.Sleep(5000); // Check every 5 seconds
