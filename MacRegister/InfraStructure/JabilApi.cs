@@ -33,7 +33,7 @@ public class JabilApi
         }
         catch (HttpRequestException ex)
         {
-            throw new Exception($"Failed to send Test MES request. {ex.Message}", ex);
+            throw new Exception($"Failed to send Test MES request. {ex.Message}, Inner Exception: {ex.InnerException}", ex);
         }
     }
 }
