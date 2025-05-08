@@ -77,7 +77,7 @@ namespace MacRegister
                 : null;
         }
 
-        private void Run(Constants _constants, string pathWatch)
+        private async void Run(Constants _constants, string pathWatch)
         {
             Console.WriteLine($"Iniciando o processamento do arquivo: {pathWatch}");
 
@@ -219,112 +219,115 @@ namespace MacRegister
 
                 if (log.TestResult == "P")
                 {
-                    var resultMesApi = _jabilApi.SendTestMes(mesApiRequest);
+                    var resultMesApi = await _jabilApi.SendTestMes(mesApiRequest);
 
-                    if (!isRetest && _constants.WillGetMac == "True")
+                    if (!string.IsNullOrEmpty(resultMesApi.ToString()))
                     {
-                        var resultMacApi = _macApi.InsertMacLog(macInsertRequest);
+                        if (!isRetest && _constants.WillGetMac == "True")
+                        {
+                            var resultMacApi = await _macApi.InsertMacLog(macInsertRequest);
 
 
-                        // Título em verde
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\n************ MAC REGISTRADO NA BASE DE DADOS /LOG REPORTADO PARA O MES ************\n");
-                        Console.ResetColor();
+                            // Título em verde
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\n************ MAC REGISTRADO NA BASE DE DADOS /LOG REPORTADO PARA O MES ************\n");
+                            Console.ResetColor();
 
-                        // Informações do Log
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine($"Serial: {log.Serial}");
-                        Console.WriteLine($"Mac: {log.Mac}");
-                        Console.ResetColor();
+                            // Informações do Log
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine($"Serial: {log.Serial}");
+                            Console.WriteLine($"Mac: {log.Mac}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Versão Script Local: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{log.PgmVersion}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Versão Script Local: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{log.PgmVersion}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Versão Script Configurada no Mes: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{resultPGM}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Versão Script Configurada no Mes: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{resultPGM}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Resultado Placa: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{log.TestResult}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Resultado Placa: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{log.TestResult}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Resultado API Mes: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("OK");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Resultado API Mes: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine("OK");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Resultado API Mac: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("OK");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Resultado API Mac: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine("OK");
+                            Console.ResetColor();
 
-                        // Separador em cinza escuro
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine("\n-----------------------------------------\n");
-                        Console.ResetColor();
-                        //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
-                        return;
+                            // Separador em cinza escuro
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.WriteLine("\n-----------------------------------------\n");
+                            Console.ResetColor();
+                            //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
+                            return;
 
-                    }
-                    else
-                    {
+                        }
+                        else
+                        {
 
-                        // Título em verde
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\n************LOG REPORTADO PARA O MES ************\n");
-                        Console.ResetColor();
+                            // Título em verde
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\n************LOG REPORTADO PARA O MES ************\n");
+                            Console.ResetColor();
 
-                        // Informações do Log
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine($"Serial: {log.Serial}");
-                        Console.ResetColor();
+                            // Informações do Log
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine($"Serial: {log.Serial}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Versão Script Local: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{log.PgmVersion}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Versão Script Local: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{log.PgmVersion}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Versão Script Configurada no Mes: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{resultPGM}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Versão Script Configurada no Mes: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{resultPGM}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Resultado Placa: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"{log.TestResult}");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Resultado Placa: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"{log.TestResult}");
+                            Console.ResetColor();
 
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write($"Resultado API Mes: ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("OK");
-                        Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Resultado API Mes: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine("OK");
+                            Console.ResetColor();
 
-                        // Separador em cinza escuro
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine("\n-----------------------------------------\n");
-                        Console.ResetColor();
-                        //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
-                        return;
+                            // Separador em cinza escuro
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.WriteLine("\n-----------------------------------------\n");
+                            Console.ResetColor();
+                            //_fileOperations.MoveFileToSccess(filePath, _constants.PathProcessed);
+                            return;
 
+                        } 
                     }
                 }
 
                 else
                 {
-                    var resultMesApi = _jabilApi.SendTestMes(mesApiRequest);
+                    var resultMesApi = await _jabilApi.SendTestMes(mesApiRequest);
                     //var resultMesApi = "SUCESS";
 
 
