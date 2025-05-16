@@ -114,6 +114,7 @@ namespace MacRegister
                     Customer = "SAMSUNG",
                     Division = "SAMSUNG",
                     Step = _constants.Step,
+                    //AssemblyNumber = _constants.Assembly,
                     Equipment = _constants.Equipment + log.Jig,
                     TestResult = log.TestResult,
                     FailureLabel = log.FailureMessage,
@@ -127,7 +128,6 @@ namespace MacRegister
                 };
 
                 if ((
-                    //string.IsNullOrEmpty(log.Mac) && !isRetest && log.TestResult == "P" ||
                     string.IsNullOrEmpty(log.Serial) ||
                     string.IsNullOrEmpty(log.PgmVersion)
 

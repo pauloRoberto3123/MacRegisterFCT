@@ -18,7 +18,6 @@ namespace MacRegister.Service
                 if (line.Contains("P/N : "))
                 {
                     log.Serial = line.Split(':')[1].Trim();
-                    //log.Serial = "BR01BA9223728AEA8FSD80089";
                 }
 
                 if (line.Contains("JIG : "))
@@ -35,11 +34,7 @@ namespace MacRegister.Service
                     string datePart = line.Split(new[] { "DATE : " }, StringSplitOptions.None)[1].Split(new[] { " TIME : " }, StringSplitOptions.None)[0].Trim();
                     string timePart = line.Split(new[] { "TIME : " }, StringSplitOptions.None)[1].Trim();
 
-
                     string dateTimeString = $"{datePart} {timePart}";
-
-                    //Console.WriteLine($"Concatenated DateTime String: {dateTimeString}");
-
 
                     log.DateStart = dateTimeString;
                 }
@@ -99,35 +94,6 @@ namespace MacRegister.Service
             }
 
             return lastLogLinesList;
-        }
-
-        public void MoveFileToSccess(string pathFile, string pathSuccess)
-        {
-            // Cria a pasta com a data se não existir
-            CreateDirectoryForDate(pathSuccess);
-
-            string dateFolder = DateTime.Now.ToString("yyyy-MM-dd");
-            string fileName = Path.GetFileName(pathFile);
-            string timestamp = DateTime.Now.ToString("_yyyyMMddHHmmssfff");
-            string destFile = Path.Combine(pathSuccess, dateFolder, timestamp + fileName);
-
-            File.Move(pathFile, destFile);
-            return;
-        }
-
-        public void MoveFileToError(string pathFile, string pathError)
-        {
-
-            // Cria a pasta com a data se não existir
-            CreateDirectoryForDate(pathError);
-
-            string dateFolder = DateTime.Now.ToString("yyyy-MM-dd");
-            string fileName = Path.GetFileName(pathFile);
-            string timestamp = DateTime.Now.ToString("_yyyyMMddHHmmssfff");
-            string destFile = Path.Combine(pathError, dateFolder, timestamp + fileName);
-
-            File.Move(pathFile, destFile);
-            return;
         }
 
         public void CreateDirectory(string path)

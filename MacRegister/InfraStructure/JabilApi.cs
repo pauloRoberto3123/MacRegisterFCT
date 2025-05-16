@@ -25,6 +25,9 @@ public class JabilApi
             var json = JsonSerializer.Serialize(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            Console.WriteLine($"Url de envio: {_httpClient.BaseAddress + "Test/SendTestMes"}");
+            Console.WriteLine(json);
+
             var response = await _httpClient.PostAsync("Test/SendTestMes", content);
 
             response.EnsureSuccessStatusCode(); // Throws on error response.
